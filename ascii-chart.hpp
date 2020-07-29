@@ -17,7 +17,7 @@
 #include <vector>
 
 /**
-Before including ascii-char.hpp, define DYNAMIC_STATIC_ASCII_CHART_DEFAULT_SEPERATOR with one of the predefined AsciiChart::Seperator objects to select the default AsciiChart::Seperator
+Before including ascii-chart.hpp, define DYNAMIC_STATIC_ASCII_CHART_DEFAULT_SEPERATOR with one of the predefined AsciiChart::Seperator objects to select the default AsciiChart::Seperator
     @note DYNAMIC_STATIC_ASCII_CHART_DEFAULT_SEPERATOR may be defined as one of
         Empty
         Basic
