@@ -43,13 +43,13 @@ public:
     {
     public:
         /**
-        Represents a single row of AsciiChart::Cell objects in an AsciiChart
+        Represents a single row of AsciiChart::Cell objects
             @note Row is an alias for std::vector<AsciiChart::Cell>
         */
         using Row = std::vector<Cell>;
 
         /**
-        Represents a grid of AsciiChart::Cell objects in an AsciiChart
+        Represents a grid of AsciiChart::Cell objects
             @note Grid is an alias for std::vector<Row>
         */
         using Grid = std::vector<Row>;
