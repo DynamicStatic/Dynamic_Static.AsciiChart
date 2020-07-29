@@ -1,1 +1,0 @@
-# Dynamic_Static.AsciiChart
