@@ -266,7 +266,7 @@ private:
         write_row_seperator(strm, seperator.bottom, maxCellWidth, cells.back().size(), cells.back().size());
     }
 
-    inline void write_row_cells(std::ostream& strm, size_t maxCellWidth, size_t maxCellHeight, const std::vector<Cell>& row) const
+    inline void write_row_cells(std::ostream& strm, size_t maxCellWidth, size_t maxCellHeight, const Cell::Row& row) const
     {
         for (size_t line_i = 0; line_i < maxCellHeight; ++line_i) {
             strm << seperator.vertical;
