@@ -31,7 +31,7 @@ Before including ascii-chart.hpp, define DYNAMIC_STATIC_ASCII_CHART_DEFAULT_SEPE
 namespace dst {
 
 /**
-Provides facilities for printing an ASCII character chart
+Provides facilities for printing an ASCII chart
 */
 class AsciiChart final
 {
