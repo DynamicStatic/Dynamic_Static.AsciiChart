@@ -84,6 +84,7 @@ public:
         */
         inline Cell& operator=(const Cell& other)
         {
+            fill = other.fill;
             mStr = other.mStr;
             mLines = other.mLines;
             mWidth = other.mWidth;
@@ -100,7 +101,20 @@ public:
             mStr = str;
             size_t lineBegin = 0;
             while (lineBegin < mStr.size()) {
-                auto lineEnd = std::min(mStr.find('\n', lineBegin), mStr.size());
+                auto lineEnd = mStr.size();
+                for (size_t char_i = lineBegin; char_i < mStr.size(); ++char_i) {
+                    switch (mStr[char_i]) {
+                    case '\t': {
+                        static const std::string sTabStr = "    ";
+                        mStr.replace(char_i, 1, sTabStr);
+                        char_i += sTabStr.size();
+                    } break;
+                    case '\n': {
+                        lineEnd = char_i;
+                        char_i = mStr.size();
+                    } break;
+                    }
+                }
                 auto lineSize = lineEnd - lineBegin;
                 mLines.emplace_back(lineBegin, lineSize);
                 mWidth = std::max(mWidth, lineSize);
@@ -159,6 +173,8 @@ public:
             mLines.clear();
             mWidth = 0;
         }
+
+        char fill { '\0' }; //!< This AsciiChart::Cell object's fill character
 
     private:
         std::string mStr;
@@ -229,6 +245,43 @@ public:
 
     Cell::Grid cells;                //!< This AsciiChart object's AsciiChart::Cell::Grid
     Seperator seperator { Default }; //!< This AsciiChart object's AsciiChart::Seperator
+    char fill { '\0' };              //!< This AsciiChart object's fill character
+
+    /**
+    Gets a const reference to the AsciiChart::Cell at a specified index
+    @return A const reference to the AsciiChart::Cell at the specified index
+    */
+    inline const Cell& operator[](size_t index) const
+    {
+        size_t row_i = 0;
+        while (cells[row_i].size() <= index) {
+            index -= cells[row_i++].size();
+        }
+        return cells[row_i][index];
+    }
+
+    /**
+    Gets a const reference to the AsciiChart::Cell at a specified index
+    @return A const reference to the AsciiChart::Cell at the specified index
+    */
+    inline Cell& operator[](size_t index)
+    {
+        auto constThis = const_cast<const AsciiChart*>(this);
+        return const_cast<Cell&>(constThis->operator[](index));
+    }
+
+    /**
+    Gets this AschiiChart object's AsciiChart::Cell count
+    @return This AsciiChart object's AsciiChart::Cell count
+    */
+    inline size_t get_cell_count() const
+    {
+        size_t cellCount = 0;
+        for (const auto& row : cells) {
+            cellCount += row.size();
+        }
+        return cellCount;
+    }
 
     /**
     Writes a given AsciiChart to a given std::ostream
@@ -266,19 +319,6 @@ private:
         write_row_seperator(strm, seperator.bottom, maxCellWidth, cells.back().size(), cells.back().size());
     }
 
-    inline void write_row_cells(std::ostream& strm, size_t maxCellWidth, size_t maxCellHeight, const Cell::Row& row) const
-    {
-        for (size_t line_i = 0; line_i < maxCellHeight; ++line_i) {
-            strm << seperator.vertical;
-            for (size_t cell_i = 0; cell_i < row.size(); ++cell_i) {
-                auto line = row[cell_i][line_i];
-                std::fill_n(std::ostream_iterator<char>(strm << line), maxCellWidth - line.size(), ' ');
-                strm << seperator.vertical;
-            }
-            strm << std::endl;
-        }
-    }
-
     inline void write_row_seperator(std::ostream& strm, Seperator::Characters seperatorCharacters, size_t maxCellWidth, size_t leadRowCellCount, size_t followRowCellCount) const
     {
         strm << seperatorCharacters.left;
@@ -289,6 +329,24 @@ private:
             strm << (cell_i + 1 < maxCellCount ? seperatorCharacters.inner : seperatorCharacters.right);
         }
         strm << std::endl;
+    }
+
+    inline void write_row_cells(std::ostream& strm, size_t maxCellWidth, size_t maxCellHeight, const Cell::Row& row) const
+    {
+        for (size_t line_i = 0; line_i < maxCellHeight; ++line_i) {
+            strm << seperator.vertical;
+            for (size_t cell_i = 0; cell_i < row.size(); ++cell_i) {
+                const auto& cell = row[cell_i];
+                auto line = row[cell_i][line_i];
+                auto fillCharacter = cell.fill ? cell.fill : fill ? fill : ' ';
+                if (fillCharacter) {
+                    std::replace_if(line.begin(), line.end(), [](char c) { return isspace((int)c); }, fillCharacter);
+                }
+                std::fill_n(std::ostream_iterator<char>(strm << line), maxCellWidth - line.size(), fillCharacter);
+                strm << seperator.vertical;
+            }
+            strm << std::endl;
+        }
     }
 };
 

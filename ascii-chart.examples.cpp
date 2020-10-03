@@ -25,7 +25,7 @@
 +-------------------------+-------------------------+-------------------------+
 |{                        |{                        |
 |    "type": "chimpanzee",|    "type": "centipede", |
-|    "legs": 2            |    "legs": "too many"   |
+|    "legs": 2            |    "legs": "too many",  |
 |}                        |    "stinger": true      |
 |                         |}                        |
 |                         |                         |
@@ -66,7 +66,7 @@ R"({
 })",
 R"({
     "type": "centipede",
-    "legs": "too many"
+    "legs": "too many",
     "stinger": true
 })",
 R"({
@@ -172,29 +172,29 @@ nulla proin.
 |        |        |        |        |        |        |        |        |
 |        |        |        |        |        |        |        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|2       |        |        |        |        |        |        |        |
+|2       |        |        |        |        ||||||||||        |        |
 |        |        |        |        |        |{ 5, 2 }|        |        |
-|        |        |        |        |        |        |        |        |
+|        |        |        |        |        ||||||||||        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|3       |        |        |        |        |        |        |        |
+|3       ||||||||||        |        |        |        |        |        |
 |        |{ 1, 3 }|        |        |        |        |        |        |
-|        |        |        |        |        |        |        |        |
+|        ||||||||||        |        |        |        |        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
 |4       |        |        |        |        |        |        |        |
 |        |        |        |        |        |        |        |        |
 |        |        |        |        |        |        |        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|5       |        |        |        |        |        |        |        |
+|5       |        |        ||||||||||        |        |        |        |
 |        |        |        |{ 3, 5 }|        |        |        |        |
-|        |        |        |        |        |        |        |        |
+|        |        |        ||||||||||        |        |        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
 |6       |        |        |        |        |        |        |        |
 |        |        |        |        |        |        |        |        |
 |        |        |        |        |        |        |        |        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
-|7       |        |        |        |        |        |        |        |
+|7       |        |        |        |        |        ||||||||||        |
 |        |        |        |        |        |        |{ 6, 7 }|        |
-|        |        |        |        |        |        |        |        |
+|        |        |        |        |        |        ||||||||||        |
 +--------+--------+--------+--------+--------+--------+--------+--------+
 */
 dst::AsciiChart get_coordinate_ascii_chart()
@@ -208,18 +208,25 @@ dst::AsciiChart get_coordinate_ascii_chart()
     for (size_t column_i = 0; column_i < asciiChart.cells[0].size(); ++column_i) {
         asciiChart.cells[0][column_i] = std::to_string(column_i);
     }
-    asciiChart.cells[2][5] = "\n{ 5, 2 }\n";
-    asciiChart.cells[3][1] = "\n{ 1, 3 }\n";
-    asciiChart.cells[5][3] = "\n{ 3, 5 }\n";
-    asciiChart.cells[7][6] = "\n{ 6, 7 }\n";
+    auto setupCell =
+    [&asciiChart](size_t row, size_t column)
+    {
+        auto& cell = asciiChart.cells[row][column];
+        cell = "\n{ " + std::to_string(column) + ", " + std::to_string(row) + " }\n";
+        cell.fill = '|';
+    };
+    setupCell(2, 5);
+    setupCell(3, 1);
+    setupCell(5, 3);
+    setupCell(7, 6);
     return asciiChart;
 }
 
 void print_ascii_chart(const std::string& name, dst::AsciiChart asciiChart)
 {
-    std::cout << std::endl;
-    std::cout << name << std::endl;
-    std::cout << asciiChart << std::endl;
+    std::cout << '\n';
+    std::cout << name << '\n';
+    std::cout << asciiChart << '\n';
     asciiChart.seperator = dst::AsciiChart::Basic;
     std::ofstream(name + "-ascii-chart.txt") << asciiChart;
 }
