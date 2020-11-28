@@ -1,4 +1,11 @@
 
+#==========================================
+#  Copyright (c) 2016-2020 dynamic_static
+#    Patrick Purcell
+#      Licensed under the MIT license
+#    http://opensource.org/licenses/MIT
+#==========================================
+
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(dynamic_static.ascii-chart VERSION 1.0.0)
 add_executable(
