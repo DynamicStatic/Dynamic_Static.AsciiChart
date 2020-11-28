@@ -8,6 +8,8 @@
 
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
 project(dynamic_static.ascii-chart VERSION 1.0.0)
+set(CMAKE_CXX_STANDARD 17)
+
 add_executable(
     dynamic_static.ascii-chart.examples
     "${CMAKE_CURRENT_LIST_DIR}/ascii-chart.hpp"
