@@ -261,8 +261,8 @@ public:
     }
 
     /**
-    Gets a const reference to the AsciiChart::Cell at a specified index
-    @return A const reference to the AsciiChart::Cell at the specified index
+    Gets a reference to the AsciiChart::Cell at a specified index
+    @return A reference to the AsciiChart::Cell at the specified index
     */
     inline Cell& operator[](size_t index)
     {
